@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# csv-tasks
-Simple task and goal manager that stores data in CSV
-=======
 # CSV Task Manager
 
 Simple task and goal manager that stores data in CSV
@@ -25,4 +21,3 @@ dotnet run tasks.csv
 - [ ] do something useful
 
 I wrote this program out of boredom and I am not going to develop it seriously
->>>>>>> fe411dd (Init project)
