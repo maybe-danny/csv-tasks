@@ -57,7 +57,24 @@ public class Runner
 
                 case 'q':
                 {
-                    tm.Quit();
+                    if (tm.Changed())
+                    {
+                        bool answered = false;
+                        while (!answered)
+                        {
+                            Console.Clear();
+                            Console.Write("Save changes? (y/n) ");
+                            char key = char.Parse(Console.ReadLine().ToLower());
+
+                            if (key == 'y') 
+                            {
+                                tm.WriteTasks();
+                                answered = true;
+                            }
+                            else if (key == 'n') answered = true;
+                            else continue;
+                        }
+                    }
                     return;
                 }
 
@@ -73,6 +90,8 @@ public class TaskManager
     private LinkedList<Task> tasks;
     private bool changed = false;
 
+    public bool Changed() { return changed; }
+
     public TaskManager(string path)
     {
         this._path = path;
@@ -85,7 +104,7 @@ public class TaskManager
         bool exists = File.Exists(this._path);
 
         // Skip reading data if the file did not exist
-        if (exists)        
+        if (exists)
         {
             FileStream fileStream = new FileStream(this._path, FileMode.OpenOrCreate, FileAccess.Read);
             StreamReader streamReader = new StreamReader(fileStream);
@@ -113,9 +132,21 @@ public class TaskManager
             streamReader.Close();
             fileStream.Close();
         }
-        else File.Create(this._path);
         
         return result;
+    }
+
+    private LinkedListNode<Task> GetTaskByIndex(uint index)
+    {
+        var node = this.tasks.First;
+        int i = 0;
+        while (node != null && i < index)
+        {
+            node = node.Next;
+            i++;
+        }
+
+        return node;
     }
 
     public bool PrintTasks()
@@ -153,15 +184,7 @@ public class TaskManager
     public void RemoveTask(uint index)
     {
         if (index > this.tasks.Count) return;
-
-        var node = this.tasks.First;
-        int i = 0;
-        while (node != null && i < index)
-        {
-            node = node.Next;
-            i++;
-        }
-        this.tasks.Remove(node);
+        this.tasks.Remove(GetTaskByIndex(index));
         this.changed = true;
     }
 
@@ -178,28 +201,6 @@ public class TaskManager
 
         streamWriter.Close();
         fileStream.Close();
-    }
-
-    public void Quit()
-    {
-        if (this.changed)
-        {
-            bool answered = false;
-            while (!answered)
-            {
-                Console.Clear();
-                Console.Write("Save changes? (y/n) ");
-                char key = char.Parse(Console.ReadLine().ToLower());
-
-                if (key == 'y') 
-                {
-                    WriteTasks();
-                    answered = true;
-                }
-                else if (key == 'n') answered = true;
-                else continue;
-            }
-        }
     }
 }
 
