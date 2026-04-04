@@ -1,16 +1,6 @@
 ﻿using System.Globalization;
 
-public readonly struct Task
-{
-    public string Goal { get; init; }
-    public string Date { get; init; }
-
-    public Task(string goal, string date)
-    {
-        this.Goal = goal;
-        this.Date = date;
-    }
-}
+public record struct Task(string Goal, string Date);
 
 
 public class Runner
